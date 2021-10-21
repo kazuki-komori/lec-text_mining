@@ -3,7 +3,7 @@ import os
 
 os.chdir('/cloud/project/txt_cleaner/')
 
-author = "akutagawa"
+author = "dazai"
 
 _dir = "./data/row/NORUBY/{}/".format(author)
 _out_dir = "./data/fixed/{}/".format(author)
@@ -19,5 +19,5 @@ for f in fs:
   split_txt = re.findall(".*?。", txt)
   join_txt = "\n".join(split_txt)
   
-  with open(_out_dir + f, "w") as fh:
+  with open(_out_dir + f, "w", encoding="UTF-8") as fh:
     fh.write(join_txt)
