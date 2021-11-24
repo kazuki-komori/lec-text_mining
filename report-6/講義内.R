@@ -10,6 +10,12 @@ head(data)
 data2 <- data.frame(word = rownames(data), data)
 wordcloud2(data2)
 
+# kishida の cloud
+kishida <- read.csv("./kishida.csv", fileEncoding = "cp932")
+head(kishida)
+suga <- data.frame(word = kishida$Word1, freq = kishida$kishisda)
+wordcloud2(kishida)
+
 # suga の cloud
 suga <- read.csv("./suga.csv", fileEncoding = "cp932")
 head(suga)
