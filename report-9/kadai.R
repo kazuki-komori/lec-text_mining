@@ -4,9 +4,11 @@ library(readr)
 data.livedoor <- read_csv("./data/livedoor.csv", locale = locale(encoding = "SHIFT-JIS"))
 
 data.lda <- data.frame(rbind(data.livedoor[1:500, ], data.livedoor[1501:2000, ], data.livedoor[2001:2500, ], data.livedoor[3501:4000, ]))
+data.lda[1100, ]$Words
 data.lda <- data.lda[, colnames(data.lda) != "OTHERS"] # OTHERSの数が多いため削除
 data.lda <- data.lda[, -1] # 単語が列として不要なので削除
 data.lda <- data.lda[, colSums(data.lda) != 0] # 出現数がトータル0の単語を削除
+
 
 # LDA実行
 library(topicmodels)
