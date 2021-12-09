@@ -48,5 +48,8 @@ dist.mb <- jsdist(t(data.mb))
 hc.mb <- hclust(as.dist(dist.mb), "ward.D2")
 plot(hc.mb, hang = -1, main = "太宰治と芥川龍之介の作品 JSDクラスター")
 
-
-
+library(scatterplot3d)
+d <- cmdscale(dist.mb, 3)
+scatterplot3d(d[, 1], d[, 2], d[, 3])
+text(s3d$xyz.convert(dist.mb), labels = rownames(dist.mb),
+     cex= 0.7, col = "steelblue")
