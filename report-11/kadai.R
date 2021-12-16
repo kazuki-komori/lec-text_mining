@@ -2,6 +2,7 @@ setwd("/cloud/project")
 getwd()
 
 library(kernlab)
+library(caret)
 
 mei_akuta <- read.csv("./中間レポート/data/mei_akuta.csv", fileEncoding = "SHIFT-JIS") 
 mei_dazai <- read.csv("./中間レポート/data/mei_dazai.csv", fileEncoding = "SHIFT-JIS") 
@@ -32,3 +33,9 @@ data2 <- cbind(data.mb[, 3:4], data.mb$type)
 colnames(data2) <- c(colnames(data.mb[, 3:4]), "type")
 res.ksvm2 <- ksvm(type ~ ., data2)
 plot(res.ksvm2, data=data.mb[, 3:4])
+
+
+# ロジステック
+ctrl <- trainControl(method = "repeatedcv", repeats = 5, number=7)
+res.log <- train(type ~ ., data = data.mb, method = "glmnet", trControl = ctrl)
+
