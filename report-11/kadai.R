@@ -21,7 +21,6 @@ data.mb <- as.data.frame(t(data.mb))
 data.mb$OTHERS1 <- NULL
 data.mb$type <- as.factor(c(rep("akuta", 10), rep("dazai", 10)))
 rownames(data.mb) <- titles
-
 ## SVM
 res.ksvm <- ksvm(type ~ ., data.mb)
 res.ksvm
@@ -38,4 +37,4 @@ plot(res.ksvm2, data=data.mb[, 3:4])
 # ロジステック
 ctrl <- trainControl(method = "repeatedcv", repeats = 5, number=7)
 res.log <- train(type ~ ., data = data.mb, method = "glmnet", trControl = ctrl)
-
+table(data.mb$type, predict(res.log, data.mb[colnames(data.mb) != "type"]))

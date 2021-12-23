@@ -1,0 +1,74 @@
+---
+title: "第13回 講義外課題"
+author: "kazuki komori"
+date: "2021/12/23"
+output: html_document
+---
+
+```{r}
+library(caret)
+library(kernlab)
+library(rpart)
+library(adabag)
+```
+
+## データ整形
+```{r}
+mb_akuta <- read.csv("./中間レポート/data/mb_akuta.csv") 
+mb_dazai <- read.csv("./中間レポート/data/mb_dazai.csv")
+
+titles <- c("a-鼻", "a-地獄変", "a-蛙", "a-貝殻", "a-枯野抄", "a-煙管", "a-女", "a-羅生門", "a-沙羅の花", "a-トロッコ", "d-兄たち", "d-朝", "d-あさましきもの", "d-走れメロス", "d-キリギリス", "d-人間失格", "d-女の決闘", "d-惜別", "d-創世記", "d-嘘")
+
+data.mb <- merge(mb_akuta, mb_dazai, ID = "Word1", all = T)
+data.mb[is.na(data.mb)] <- 0
+rownames(data.mb) <- data.mb$Word1
+data.mb$Word1 <- NULL
+data.mb <- as.data.frame(t(data.mb))
+data.mb$OTHERS1 <- NULL
+data.mb$type <- as.factor(c(rep("akuta", 10), rep("dazai", 10)))
+rownames(data.mb) <- titles
+```
+
+
+```{r}
+set.seed(0)
+CF <- createFolds(1:20,k=10)
+```
+
+```{r}
+SVM <- function() {
+  k = 10
+  res <- matrix(0,k,1)
+  for (i in 1:10) {
+    res.ksvm <- ksvm(type ~ ., data.mb[-CF[[i]],])
+    ta <- table(data.mb[CF[[i]],]$type, predict(res.ksvm, data.mb[CF[[i]], colnames(data.mb) != "type"]))
+    res[i, 1] <- sum(diag(ta)) / sum(ta)
+  }
+  return(mean(res))
+}
+```
+
+```{r}
+Ketteigi <- function() {
+  k = 10
+  res <- matrix(0,k,1)
+  for (i in 1:10) {
+    res.ktg <- rpart(type ~ ., data.mb[-CF[[i]],], minsplit = 3)
+    ta <- table(data.mb[CF[[i]],]$type, predict(res.ktg, data.mb[CF[[i]], colnames(data.mb) != "type"], type="class"))
+    res[i, 1] <- sum(diag(ta)) / sum(ta)
+  }
+
+  return(mean(res))
+}
+```
+
+```{r}
+Boost <- function() {
+  res.boo <- boosting.cv(type ~ ., data = data.mb)
+}
+```
+
+```{r}
+(res.svm <- SVM())
+(res.ktg <- Ketteigi())
+```
