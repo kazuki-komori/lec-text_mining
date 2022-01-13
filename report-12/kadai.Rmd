@@ -5,15 +5,20 @@ date: "2021/12/23"
 output: html_document
 ---
 
+### 1108190116
+### 小森一輝
+
 ```{r}
 library(caret)
 library(kernlab)
 library(rpart)
 library(adabag)
+library(randomForest)
 ```
 
 ## データ整形
 ```{r}
+setwd("/cloud/project")
 mb_akuta <- read.csv("./中間レポート/data/mb_akuta.csv") 
 mb_dazai <- read.csv("./中間レポート/data/mb_dazai.csv")
 
@@ -63,12 +68,25 @@ Ketteigi <- function() {
 ```
 
 ```{r}
-Boost <- function() {
-  res.boo <- boosting.cv(type ~ ., data = data.mb)
+RF <- function() {
+  k = 10
+  res <- matrix(0,k,1)
+  for (i in 1:10) {
+    res.rf <- randomForest(type ~ ., data.mb[-CF[[i]],], ntree=500)
+    ta <- table(data.mb[CF[[i]],]$type, predict(res.rf, data.mb[CF[[i]], colnames(data.mb) != "type"], type="class"))
+    res[i, 1] <- sum(diag(ta)) / sum(ta)
+  }
+
+  return(mean(res))
 }
 ```
 
 ```{r}
+print("サポートベクターマシン")
 (res.svm <- SVM())
+print("決定木")
 (res.ktg <- Ketteigi())
+print("ランダムフォレスト")
+(res.rf <- RF())
 ```
+

@@ -1,0 +1,26 @@
+---
+title: "第14回 課題"
+author: "kazuki komori"
+date: "2022/1/13"
+output: html_document
+---
+
+## 課題1
+
+```{r}
+url <- "http://mjin.doshisha.ac.jp/data/akuta117y.csv"
+data <- read.csv(url, row.names = 1, fileEncoding = "cp932")
+head(data)
+```
+
+```{r}
+library(stm)
+library(ldatuning)
+library(topicmodels)
+```
+
+
+```{r}
+res.ntopic <- FindTopicsNumber(data, topics=2:6, method="Gibbs", metrics=c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"))
+
+```
